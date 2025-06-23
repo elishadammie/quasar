@@ -30,7 +30,41 @@ graph TD
     G --> H;
 ```
 
-## 🛠️ Tech Stack
+## Full-Stack Application Architecture Diagram
+This shows the higher-level architecture of how the entire containerized application works, from the user's browser all the way to the backend services running in Docker.
+
+```mermaid
+graph TD
+    subgraph "User's Local Machine"
+        User["User"] --> Browser["Web Browser"];
+    end
+
+    subgraph "Docker Environment (Managed by docker-compose)"
+        Frontend["Nginx Frontend Container"];
+        Backend["FastAPI Backend Container"];
+        Database[("PostgreSQL/pgvector DB")];
+    end
+    
+    subgraph "External Services"
+        OpenAI["OpenAI API"];
+    end
+
+    User -- "1. Accesses UI at http://localhost:8501" --> Browser;
+    Browser -- "2. Loads HTML/CSS/JS" --> Frontend;
+    Browser -- "3. Sends API Request (/api/v1/chat)" --> Frontend;
+    Frontend -- "4. Forwards API request via reverse proxy" --> Backend;
+    Backend -- "5. Invokes RAG Agent" --> AgentLogic{RAG Agent Logic};
+    AgentLogic -- "6a. Retrieves context" --> Database;
+    AgentLogic -- "6b. Sends prompt for generation" --> OpenAI;
+    Database -- "Returns documents" --> AgentLogic;
+    OpenAI -- "Returns answer" --> AgentLogic;
+    AgentLogic -- "7. Returns final answer" --> Backend;
+    Backend -- "8. Sends API Response" --> Frontend;
+    Frontend -- "9. Sends response to browser" --> Browser;
+    Browser -- "10. Displays answer to user" --> User;
+```
+
+##  Tech Stack
 
 This project uses a modern, production-ready stack designed for performance, scalability, and powerful AI capabilities.
 
@@ -46,7 +80,7 @@ This project uses a modern, production-ready stack designed for performance, sca
 |  **Persistence & Memory** | **PostgreSQL** | A robust SQL database is non-negotiable for session management and persistent memory. |
 |  **Monitoring** | **LangSmith & Comet ML** | For deep agent tracing (LangSmith) and high-level experiment tracking (Comet).             |
 
-## ✨ Core Features
+##  Core Features
 
 ### 1. The Data Ingestion Pipeline (The "Librarian")
 An asynchronous, offline process that prepares the knowledge base.
@@ -62,7 +96,7 @@ The real-time graph that interacts with the user, featuring:
 -   **Cited Generation:** The final answer is generated *only* from the provided context and includes inline citations for verifiability.
 -   **Graceful Failure:** When context is insufficient, the agent politely states what it couldn't find instead of hallucinating.
 
-## 🚀 Getting Started
+##  Getting Started
 
 Follow these instructions to set up and run the project locally.
 
@@ -126,7 +160,7 @@ poetry run uvicorn app.main:app --reload
 
 Simply open the `frontend/index.html` file in your web browser. The JavaScript in the file is configured to communicate with the backend server running on port 8000.
 
-## 📈 Project Milestones
+##  Project Milestones
 
 | Phase | Description                                                                    | Key Technologies                                                    |
 | ----- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
