@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quasar</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app-layout">
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <h2>✨ Quasar</h2>
+            </div>
+            <button id="new-chat-button">+ New Chat</button>
+            <div class="sidebar-section">
+                <small>RECENT</small>
+                </div>
+            <div class="sidebar-footer">
+                <div class="profile-item">Profile</div>
+                <div class="profile-item">Log Out</div>
+            </div>
+        </div>
+
+        <div id="chat-container">
+            <div class="header">
+                <h1>Quasar Assistant</h1>
+                </div>
+            <div id="chat-box">
+                </div>
+            <div id="input-area">
+                <input type="text" id="user-input" placeholder="Ask a question about your documents...">
+                <button id="send-button">➤</button>
+            </div>
+            <div class="disclaimer">
+                Quasar can make mistakes. Consider checking important information.
+            </div>
+        </div>
+
+        <div id="context-panel">
+            <div class="context-header">
+                <h3>Document Context</h3>
+            </div>
+            <div class="context-section">
+                <small>ACTIVE DOCUMENTS</small>
+                </div>
+            <div class="context-section">
+                <small>CITATION DETAILS</small>
+                <div id="citation-box">
+                    Click on a source link in the chat to view the citation here.
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>

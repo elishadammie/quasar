@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "quasar"
+version = "0.1.0"
+description = "Agentic, Adaptive RAG Platform for Enterprise Knowledge"
+authors = ["Elisha Isarinde <elishadammie@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+# We are constraining the project to Python versions compatible with all dependencies.
+python = ">=3.11,<3.13"
+
+# Web Backend & API
+fastapi = "^0.111.0"
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+pydantic = "^2.7.1"
+pydantic-settings = "^2.2.1"
+
+# LangChain Agent Orchestration
+langchain = "^0.3.25"
+langchain-core = "^0.3.65"
+langchain-community = "^0.3.25"
+langgraph = "0.4.8"
+openai = "^1.30.1"  # optional but common
+tiktoken = "^0.7.0" # for token counting
+
+# LLM & Embedding Provider (OpenAI)
+langchain-openai = "0.3.24"
+
+# Database (PostgreSQL + pgvector)
+psycopg2-binary = "^2.9.9"
+pgvector = "^0.2.5"
+sqlalchemy = "^2.0.30"
+
+# Data Ingestion
+unstructured = {extras = ["pdf"], version = "^0.17.2"}
+langchain-unstructured = "^0.1.6"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.1"
+ruff = "^0.4.5"
+python-dotenv = "^1.0.1"
+
+# Dependencies for notebooks
+jupyterlab = "^4.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

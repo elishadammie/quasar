@@ -1,0 +1,46 @@
+# docker-compose.yml (Final Version)
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: quasar_db
+    environment:
+      - POSTGRES_USER=quasar_user
+      - POSTGRES_PASSWORD=quasar_password
+      - POSTGRES_DB=quasar_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: quasar_backend
+    # We don't need to expose port 8000 to the host anymore, 
+    # as Nginx will handle the traffic.
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      # This URL now uses the service name 'db' instead of 'localhost'
+      - DATABASE_URL=postgresql+psycopg2://quasar_user:quasar_password@db:5432/quasar_db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: quasar_frontend
+    ports:
+      # We expose port 80 (from Nginx) on our host machine as port 8501
+      - "8501:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
