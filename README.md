@@ -35,34 +35,46 @@ This shows the higher-level architecture of how the entire containerized applica
 
 ```mermaid
 graph TD
+    %% 1. Declare All Nodes
+    User["User"];
+    Browser["Web Browser"];
+    Nginx["Nginx Frontend Container"];
+    FastAPI["FastAPI Backend Container"];
+    PostgresDB[("PostgreSQL/pgvector DB")];
+    AgentLogic{"RAG Agent Logic"};
+    OpenAI_API["OpenAI API"];
+
+    %% 2. Define Subgraphs and Group Nodes
     subgraph "User's Local Machine"
-        User["User"] --> Browser["Web Browser"];
+        User;
+        Browser;
     end
 
-    subgraph "Docker Environment (Managed by docker-compose)"
-        Frontend["Nginx Frontend Container"];
-        Backend["FastAPI Backend Container"];
-        Database[("PostgreSQL/pgvector DB")];
+    subgraph "Docker Environment"
+        Nginx;
+        FastAPI;
+        PostgresDB;
     end
-    
+
     subgraph "External Services"
-        OpenAI["OpenAI API"];
+        OpenAI_API;
     end
 
-    User -- "1. Accesses UI at http://localhost:8501" --> Browser;
-    Browser -- "2. Loads HTML/CSS/JS" --> Frontend;
-    Browser -- "3. Sends API Request (/api/v1/chat)" --> Frontend;
-    Frontend -- "4. Forwards API request via reverse proxy" --> Backend;
-    Backend -- "5. Invokes RAG Agent" --> AgentLogic{RAG Agent Logic};
-    AgentLogic -- "6a. Retrieves context" --> Database;
-    AgentLogic -- "6b. Sends prompt for generation" --> OpenAI;
-    Database -- "Returns documents" --> AgentLogic;
-    OpenAI -- "Returns answer" --> AgentLogic;
-    AgentLogic -- "7. Returns final answer" --> Backend;
-    Backend -- "8. Sends API Response" --> Frontend;
-    Frontend -- "9. Sends response to browser" --> Browser;
+    %% 3. Define All Edges (Connections)
+    User -- "1. Accesses UI" --> Browser;
+    Browser -- "2. Loads UI from Nginx" --> Nginx;
+    Browser -- "3. Sends API Request" --> Nginx;
+    Nginx -- "4. Forwards API request to Backend" --> FastAPI;
+    FastAPI -- "5. Invokes RAG Agent" --> AgentLogic;
+    AgentLogic -- "6a. Retrieves context" --> PostgresDB;
+    AgentLogic -- "6b. Sends prompt for generation" --> OpenAI_API;
+    PostgresDB -- "Returns documents" --> AgentLogic;
+    OpenAI_API -- "Returns answer" --> AgentLogic;
+    AgentLogic -- "7. Returns final response" --> FastAPI;
+    FastAPI -- "8. Sends API Response" --> Nginx;
+    Nginx -- "9. Sends response to browser" --> Browser;
     Browser -- "10. Displays answer to user" --> User;
-```
+    ```
 
 ##  Tech Stack
 
