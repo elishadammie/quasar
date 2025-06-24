@@ -30,39 +30,6 @@ graph TD
     G --> H;
 ```
 
-## Full-Stack Application Architecture Diagram
-This shows the higher-level architecture of how the entire containerized application works, from the user's browser all the way to the backend services running in Docker.
-
-```mermaid
-graph TD
-    subgraph "User's Local Machine"
-        User[fa:fa-user User] --> Browser[Web Browser];
-    end
-
-    subgraph "Docker Environment (Managed by docker-compose)"
-        Frontend[fa:fa-window-maximize Nginx Frontend Container];
-        Backend[fa:fa-server FastAPI Backend Container];
-        Database[(fa:fa-database PostgreSQL/pgvector DB)];
-    end
-    
-    subgraph "External Services"
-        OpenAI[fa:fa-cloud OpenAI API];
-    end
-
-    User -- "1. Accesses UI at http://localhost:8501" --> Browser;
-    Browser -- "2. Loads HTML/CSS/JS" --> Frontend;
-    Browser -- "3. Sends API Request (e.g., /api/v1/chat)" --> Frontend;
-    Frontend -- "4. Forwards API request via reverse proxy" --> Backend;
-    Backend -- "5. Invokes RAG Agent" --> AgentLogic{RAG Agent Logic};
-    AgentLogic -- "6a. Retrieves context" --> Database;
-    AgentLogic -- "6b. Sends prompt for embeddings/generation" --> OpenAI;
-    Database -- "Returns documents" --> AgentLogic;
-    OpenAI -- "Returns embeddings/answer" --> AgentLogic;
-    AgentLogic -- "7. Returns final answer" --> Backend;
-    Backend -- "8. Sends API Response" --> Frontend;
-    Frontend -- "9. Sends response to browser" --> Browser;
-    Browser -- "10. Displays answer to user" --> User;
-    ```
 
 ##  Tech Stack
 
